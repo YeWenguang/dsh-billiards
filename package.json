@@ -1,0 +1,59 @@
+{
+  "name": "dsh-billiards",
+  "version": "0.6.0",
+  "description": "The whole Harness is the table: a full-window 8-ball billiards game for the DeepSeek Harness Web UI.",
+  "icon": "icon.png",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "billiards",
+    "pool",
+    "game",
+    "8-ball",
+    "cordis"
+  ],
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "icon.png",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": []
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.1-rc.2": "compatible"
+      }
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "react": "^18.2.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YeWenguang/dsh-billiards.git"
+  },
+  "homepage": "https://github.com/YeWenguang/dsh-billiards#readme",
+  "bugs": {
+    "url": "https://github.com/YeWenguang/dsh-billiards/issues"
+  }
+}

@@ -1,0 +1,8 @@
+# dsh-billiards — the whole Harness is the table
+#
+# This bundle patch mounts the Host half. The browser half is discovered from
+# package.json's `dsh.client` declaration and served as /plugins/dsh-billiards/client.js.
+
+- insert:
+    - id: dsh-billiards
+      name: 'dsh-billiards'

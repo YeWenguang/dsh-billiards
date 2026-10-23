@@ -1,6 +1,6 @@
 ﻿{
   "name": "dsh-billiards",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "The whole Harness is the table: a full-window 8-ball billiards game for the DeepSeek Harness Web UI.",
   "icon": "icon.png",
   "keywords": [

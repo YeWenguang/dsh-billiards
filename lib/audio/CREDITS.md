@@ -2,8 +2,9 @@
 
 All game sounds are trimmed, mono-mixed, normalized and, for the cushion,
 layered from the following [Freesound](https://freesound.org/) samples.
-No network access is used at runtime; the files ship inside this package and
-are served by the Host from the fixed `/dsh-billiards/audio/` allowlist.
+No network access is used at runtime. WAV data is embedded as base64 in
+`lib/client.js` and decoded by WebAudio; the Host registers no audio routes.
+The packaged WAV files are retained for attribution and regeneration.
 
 | File | Source | Author | License |
 | --- | --- | --- | --- |

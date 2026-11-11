@@ -1,6 +1,6 @@
 {
   "name": "dsh-billiards",
-  "version": "0.6.3",
+  "version": "0.8.0",
   "description": "The whole Harness is the table: a full-window 8-ball billiards game for the DeepSeek Harness Web UI.",
   "icon": "icon.png",
   "keywords": [
@@ -14,6 +14,16 @@
     "cordis"
   ],
   "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "check": "node tools/build.mjs --check && node --check lib/client.js && npm test",
+    "test": "node --test test/*.test.mjs",
+    "benchmark": "node test/benchmark.mjs",
+    "test:browser": "node test/browser.mjs",
+    "test:games": "node test/auto-game.mjs",
+    "benchmark:ai": "node test/ai-benchmark.mjs"
+  },
+  "engines": { "node": ">=22" },
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
@@ -27,6 +37,7 @@
     "icon.png",
     "docs",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "dsh": {
@@ -39,7 +50,8 @@
     },
     "compatibility": {
       "dshReleases": {
-        "0.2.1-rc.2": "compatible"
+        "0.2.1-rc.2": "compatible",
+        "0.2.2-rc.1": "compatible"
       }
     }
   },

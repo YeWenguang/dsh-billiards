@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>dsh-billiards preview</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #101211;
+    --panel: #151816;
+    --panel-2: #1a1e1b;
+    --line: rgba(255,255,255,.07);
+    --text: #d8dcd7;
+    --muted: #838a84;
+    --accent: #58e0b4;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Inter", "Segoe UI Variable", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    overflow: hidden;
+  }
+  .app { display: flex; height: 100%; }
+  .side {
+    width: 280px; flex: 0 0 280px; background: #121513; border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; padding: 15px 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; padding: 4px 6px 18px; }
+  .brand-dot { width: 19px; height: 19px; border-radius: 6px; background: linear-gradient(135deg, #5ff0c4, #247d68); box-shadow: 0 0 18px #2fd3a755; }
+  .brand b { font-size: 13px; letter-spacing: .03em; font-weight: 650; }
+  .new { display: flex; align-items: center; gap: 9px; height: 34px; padding: 0 10px; border-radius: 8px; background: #1c201d; border: 1px solid var(--line); color: #dfe5df; font-size: 12px; }
+  .new kbd { margin-left: auto; color: #707771; font-size: 9px; }
+  .sect { margin-top: 21px; color: #6f776f; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; padding: 0 8px 7px; }
+  .row { display: flex; align-items: center; gap: 8px; height: 31px; padding: 0 8px; border-radius: 7px; color: #aeb6ae; font-size: 11.5px; }
+  .row.active { background: #1e2420; color: #e8eee8; }
+  .row i { width: 6px; height: 6px; border-radius: 50%; background: #4b544c; }
+  .row.active i { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .side-foot { margin-top: auto; border-top: 1px solid var(--line); padding: 12px 7px 0; font-size: 10px; color: #6d756e; display: flex; align-items: center; gap: 8px; }
+  .avatar { width: 23px; height: 23px; border-radius: 50%; background: linear-gradient(135deg, #344f47, #1d2c27); border: 1px solid #ffffff1a; }
+
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #0f1110; }
+  .top { height: 42px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid var(--line); color: #8c948d; font-size: 10.5px; }
+  .top .pill { border: 1px solid var(--line); border-radius: 99px; padding: 4px 9px; background: #171b18; }
+  .top .right { margin-left: auto; display: flex; gap: 7px; align-items: center; }
+  .top .ico { width: 25px; height: 25px; border-radius: 7px; border: 1px solid var(--line); background: #171b18; }
+  .chat { flex: 1; overflow: hidden; padding: 42px clamp(28px, 9vw, 170px) 0; }
+  .day { text-align: center; color: #596159; font-size: 9px; letter-spacing: .16em; margin-bottom: 26px; }
+  .msg { display: flex; gap: 12px; margin-bottom: 30px; }
+  .msg .who { width: 26px; height: 26px; border-radius: 8px; flex: 0 0 26px; background: linear-gradient(135deg, #24443b, #14251f); border: 1px solid #ffffff12; }
+  .msg.user .who { background: linear-gradient(135deg, #484c45, #242823); }
+  .msg .body { min-width: 0; flex: 1; }
+  .msg .name { color: #9aa39b; font-size: 10px; margin-bottom: 7px; }
+  .msg .text { font-size: 13px; line-height: 1.85; color: #c9d0c9; }
+  .msg .text strong { color: #eef3ed; font-weight: 600; }
+  .msg .text code { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; color: #9debd0; background: #1a2621; padding: 1px 4px; border-radius: 4px; }
+  .tool { margin: 14px 0 22px 38px; border: 1px solid var(--line); border-radius: 9px; background: #151916; overflow: hidden; max-width: 640px; }
+  .tool-h { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 11px; border-bottom: 1px solid var(--line); color: #9fa7a0; font-size: 10px; }
+  .tool-h .ok { width: 6px; height: 6px; border-radius: 50%; background: #55d6ad; }
+  .tool-h .path { color: #677068; }
+  .tool pre { margin: 0; padding: 11px 13px; color: #8f9a91; font: 10.5px/1.7 "Cascadia Code", Consolas, monospace; white-space: pre-wrap; }
+  .hint { margin: 8px 0 0 38px; color: #687169; font-size: 10px; }
+  .composer-wrap { padding: 12px clamp(28px, 9vw, 170px) 18px; }
+  .composer { border: 1px solid #ffffff14; border-radius: 12px; background: #161a17; padding: 12px 13px 10px; box-shadow: 0 18px 40px #0005; }
+  .composer .ph { color: #697169; font-size: 12px; min-height: 30px; }
+  .composer .bar { display: flex; align-items: center; gap: 8px; margin-top: 7px; color: #697169; font-size: 10px; }
+  .composer .send { margin-left: auto; width: 28px; height: 28px; border-radius: 8px; background: #27302b; border: 1px solid #ffffff12; }
+  .composer .model { border: 1px solid var(--line); border-radius: 7px; padding: 4px 7px; font-size: 9.5px; color: #8e978f; }
+  .composer .ghost { margin-left: auto; color: #576058; font-size: 9px; }
+  :root:not(.dark) body:not([data-ds-dark-theme]) {
+    color-scheme: light; --bg: #fcfdfc; --panel: #f4f7f4; --panel-2: #edf2ee;
+    --line: rgba(24, 50, 35, .1); --text: #24372d; --muted: #65766b; --accent: #168262;
+  }
+  :root:not(.dark) body:not([data-ds-dark-theme]) .side { background: var(--panel); }
+  :root:not(.dark) body:not([data-ds-dark-theme]) .main { background: var(--bg); }
+  :root:not(.dark) body:not([data-ds-dark-theme]) :is(.new, .row.active, .top .pill, .top .ico, .tool, .composer, .composer .send) { background: var(--panel-2); color: var(--text); border-color: var(--line); }
+  :root:not(.dark) body:not([data-ds-dark-theme]) :is(.row, .msg .text, .msg .text strong) { color: var(--text); }
+  :root:not(.dark) body:not([data-ds-dark-theme]) :is(.sect, .msg .name, .tool-h, .tool pre, .day, .top, .composer .ph) { color: var(--muted); }
+  :root:not(.dark) body:not([data-ds-dark-theme]) .composer { box-shadow: 0 12px 32px rgba(24, 50, 35, .07); }
+  @media (max-width: 940px) {
+    .side { width: 220px; flex-basis: 220px; }
+    .chat { padding: 32px 24px 0; }
+    .composer-wrap { padding: 12px 24px 18px; }
+  }
+  @media (max-width: 700px) {
+    .side { display: none; }
+    .top { padding: 0 16px; }
+    .top .right { display: none; }
+    .chat { padding: 28px 20px 0; }
+    .composer-wrap { padding: 12px 16px 18px; }
+    .msg { gap: 9px; }
+    .tool { margin-left: 35px; }
+  }
+</style>
+</head>
+<body data-ds-dark-theme>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="brand-dot"></span><b>DeepSeek Harness</b></div>
+    <div class="new">＋ 新会话 <kbd>Ctrl Alt N</kbd></div>
+    <div class="sect">Workspace</div>
+    <div class="row active"><i></i>default-workspace</div>
+    <div class="row"><i></i>docs-site</div>
+    <div class="row"><i></i>agent-lab</div>
+    <div class="sect">Sessions</div>
+    <div class="row"><i></i>台球插件开发</div>
+    <div class="row"><i></i>Refactor the loader</div>
+    <div class="row"><i></i>Release notes draft</div>
+    <div class="side-foot"><span class="avatar"></span> windows10<br><span style="color:#4f574f">标准模式 · deepseek-flash</span></div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <span class="pill">default-workspace</span>
+      <span>台球插件开发</span>
+      <div class="right"><span>插件</span><span>会话</span><div class="ico"></div><div class="ico"></div></div>
+    </header>
+    <section class="chat">
+      <div class="day">今天 23:18</div>
+      <div class="msg user">
+        <div class="who"></div>
+        <div class="body">
+          <div class="name">你</div>
+          <div class="text">开发一个 DeepSeek harness 的台球游戏插件，以整个 harness 做背景，工作时无聊可以打台球。</div>
+        </div>
+      </div>
+      <div class="msg">
+        <div class="who"></div>
+        <div class="body">
+          <div class="name">DeepSeek</div>
+          <div class="text">明白，整张界面就是球桌。<strong>球桌会铺满整个 Harness 窗口</strong>，六个袋口贴边，底下的会话、工具调用和输入框都留在桌布里。先把插件骨架和物理引擎搭起来，再校准手感和视觉。</div>
+        </div>
+      </div>
+      <div class="tool">
+        <div class="tool-h"><span class="ok"></span>Write <span class="path">dsh-billiards/lib/client.js</span><span style="margin-left:auto">+1,284</span></div>
+        <pre>export const name = 'billiards'
+export function apply(ctx) {
+  ctx.effect(() => injectStyles())
+  ctx.slots.inject('shell.overlay', function* () {
+    yield ctx.slots.register({ name: 'shell.overlay', id: 'billiards' }, Game)
+  })
+}</pre>
+      </div>
+      <div class="hint">插件已挂载，台球桌可以随时打开</div>
+      <div class="msg">
+        <div class="who"></div>
+        <div class="body">
+          <div class="name">DeepSeek</div>
+          <div class="text">需要我继续调整物理参数、AI 难度，或者给开球加一点氛围？按 <code>Alt+B</code> 随时收起球桌回到这条会话。</div>
+        </div>
+      </div>
+    </section>
+    <div class="composer-wrap">
+      <div class="composer">
+        <div class="ph">描述你想要构建的内容，/ 调用指令，@ 文件或对话</div>
+        <div class="bar"><span>＋</span><span class="ghost">工作区内修改</span><span class="model">deepseek-flash</span><div class="send"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>window.__DSH_BILLIARDS_PREVIEW__ = true;</script>
+<script src="../lib/client.js"></script>
+</body>
+</html>
+
